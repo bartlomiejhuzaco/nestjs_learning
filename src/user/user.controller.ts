@@ -12,11 +12,13 @@ import {
 } from '@nestjs/common';
 import UserDTO from 'src/dto/user.dto';
 import { UserService } from './user.service';
+import { UpdateUserEntity } from './user.entity';
 
 @Controller('users')
 export class UserController {
   constructor(private usersService: UserService) {}
 
+  @HttpCode(HttpStatus.OK)
   @Get()
   async findAll(@Res() response) {
     try {
@@ -53,33 +55,59 @@ export class UserController {
   }
 
   @Get('/:id')
-  finOne(@Res() response, @Param('id') params: string) {
-    console.log(params);
+  async finOne(@Res() response, @Param('id') id: number) {
+    try {
+      const user = await this.usersService.findOne(id);
 
-    return response.send({
-      id: params,
-    });
+      return response.send({
+        status: HttpStatus.OK,
+        user: user,
+      });
+    } catch (err) {
+      return response.send({
+        status: HttpStatus.BAD_REQUEST,
+        error: err,
+      });
+    }
   }
 
   @HttpCode(HttpStatus.OK)
   @Put('/:id')
-  updateOne(@Res() response, @Param('id') params: string) {
-    console.log(params);
+  async updateOne(
+    @Res() response,
+    @Param('id') id: number,
+    @Body() data: UpdateUserEntity,
+  ) {
+    try {
+      const updatedUser = await this.usersService.updateOne(id, data);
 
-    return response.send({
-      id: params,
-      name: 'UPDATE',
-    });
+      return response.send({
+        status: HttpStatus.OK,
+        user: updatedUser,
+      });
+    } catch (err) {
+      return response.send({
+        status: HttpStatus.BAD_REQUEST,
+        error: err,
+      });
+    }
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete('/:id')
-  deleteOne(@Res() response, @Param('id') params: string) {
-    console.log(params);
+  async removeOne(@Res() response, @Param('id') id: number) {
+    try {
+      const removingUser = await this.usersService.removeOne(id);
 
-    return response.send({
-      id: params,
-      name: 'DELETE',
-    });
+      return response.send({
+        user: removingUser,
+        status: HttpStatus.OK,
+      });
+    } catch (err) {
+      return response.send({
+        error: err,
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
   }
 }
