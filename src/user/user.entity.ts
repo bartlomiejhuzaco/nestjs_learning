@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { PartialType } from "@nestjs/mapped-types";
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class UserEntity {
@@ -13,7 +14,8 @@ export class UserEntity {
   @Column("varchar", { length: 200, unique: true, nullable: false })
   email: string;
   
-  @Column("varchar", { length: 32, nullable: false })
+  @Exclude()
+  @Column("varchar", { length: 200, nullable: false })
   password: string;
 
   @Column("date", { nullable: false })

@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/user.entity';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -16,6 +20,8 @@ import { UserEntity } from './user/user.entity';
       entities: [UserEntity],
       synchronize: true,
     }),
+    AuthModule,
+    JwtModule,
   ],
   controllers: [],
   providers: [],
